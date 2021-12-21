@@ -10,3 +10,7 @@ typedef struct PROGRAM_STATE{
         gameData_t* game;
     } stateData;
 } PROGRAM_STATE;
+
+void STATE_dummyStart(PROGRAM_STATE *ps);
+void STATE_dummyUpdate(PROGRAM_STATE *ps);
+void STATE_dummyDraw(PROGRAM_STATE *ps);

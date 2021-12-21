@@ -71,5 +71,7 @@ clean:
 -include $(DEPS)
 
 run:
-	w4 run-native build/cart.wasm
+	w4 run build/cart.wasm
 
+run_native:
+	w4 run-native build/cart.wasm

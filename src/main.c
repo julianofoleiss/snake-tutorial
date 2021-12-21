@@ -5,15 +5,11 @@
 #include "point.h"
 #include "programState.h"
 #include "gameState.h"
+#include "globals.h"
+#include "gameOverState.h"
 
-typedef enum STATE{
-    ST_GAME,
-    ST_TITLE,
-    ST_GAME_OVER
-} STATE;
-
-PROGRAM_STATE states[3];
-STATE currentState;
+extern STATE currentState;
+extern PROGRAM_STATE states[];
 
 void start() {
     PALETTE[0] = 0xFBF7F3;
@@ -24,14 +20,19 @@ void start() {
     currentState = ST_GAME;
 
     GAME_create(&states[ST_GAME]);
+    GAMEOVER_create(&states[ST_GAME_OVER]);
 
     states[currentState].start(&states[currentState]);
 }
 
 void update () {
+    STATE oldState = currentState;
 
     states[currentState].update(&states[currentState]);
+    states[oldState].draw(&states[oldState]);
 
-    states[currentState].draw(&states[currentState]);
-
+    if(oldState != currentState){
+        //trace("aaa");
+        states[currentState].start(&states[currentState]);
+    }
 }

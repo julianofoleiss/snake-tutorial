@@ -1,8 +1,11 @@
 #include "gameState.h"
 #include "programState.h"
 #include "utils.h"
+#include "globals.h"
 
 #include <stdio.h>
+
+extern STATE currentState;
 
 static const uint8_t fruitSprite[16] = { 0x00,0xa0,0x02,0x00,0x0e,0xf0,0x36,0x5c,0xd6,0x57,0xd5,0x57,0x35,0x5c,0x0f,0xf0};
 static gameData_t gameStateData;
@@ -36,7 +39,20 @@ static void input(gameData_t *gd){
     gd->prevState = *GAMEPAD1;
 }
 
+uint32_t GAME_getScore(PROGRAM_STATE *ps){
+    return ps->stateData.game->score;
+}
+
+uint32_t GAME_getHighScore(PROGRAM_STATE *ps){
+    return ps->stateData.game->highScore;
+}
+
+void GAME_setHighScore(PROGRAM_STATE *ps, uint32_t score){
+    ps->stateData.game->highScore = score;
+}
+
 void GAME_start(PROGRAM_STATE *ps){
+    //trace("bbb");
     reset(ps->stateData.game);
 }
 
@@ -48,7 +64,7 @@ void GAME_update(PROGRAM_STATE *ps){
         SNK_Update(&(gd->s));
 
         if(SNK_AteItself(&(gd->s))){
-            reset(gd);
+            currentState = ST_GAME_OVER;
         }
 
         if(PT_Equals(&(gd->s.body[0]), &(gd->fruit))){
@@ -60,7 +76,6 @@ void GAME_update(PROGRAM_STATE *ps){
 }
 
 void GAME_draw(PROGRAM_STATE *ps){
-    char scoreText[50];    
     gameData_t *gd = ps->stateData.game;
 
     SNK_Draw(&(gd->s));
@@ -68,10 +83,10 @@ void GAME_draw(PROGRAM_STATE *ps){
     blit(fruitSprite, gd->fruit.x * 8, gd->fruit.y * 8, 8, 8, BLIT_2BPP);
 
     // TODO: sprintf takes too much space. Rewrite this.
-    sprintf(scoreText, "SCORE:%d", gd->score);
-    
+    // sprintf(scoreText, "SCORE:%d", gd->score);
+
     *DRAW_COLORS = 0x04;
-    text(scoreText, 0,0);
+    text(concatStringAndNumber("SCORE:", gd->score), 0,0);
 }
 
 void GAME_create(PROGRAM_STATE *state){
@@ -79,6 +94,7 @@ void GAME_create(PROGRAM_STATE *state){
     state->start  = GAME_start;
     state->update = GAME_update;
     state->stateData.game = &gameStateData;
+    state->stateData.game->highScore = 0;
 }
 
 
