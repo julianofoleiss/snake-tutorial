@@ -8,6 +8,8 @@
 #include "globals.h"
 #include "gameOverState.h"
 
+//TODO: change "start" state callback function to "enter".
+
 extern STATE currentState;
 extern PROGRAM_STATE states[];
 

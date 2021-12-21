@@ -27,9 +27,12 @@ void GAMEOVER_draw(PROGRAM_STATE *ps){
     pos = pos < 0 ? 0 : pos;
     text(s, pos, 48);
 
-    if((finalScore > highScore) || showBeatHighScore ){
+    if((finalScore > highScore) && (!showBeatHighScore)){
         showBeatHighScore = 1;
-        GAME_setHighScore(&states[ST_GAME], finalScore);
+        GAME_setHighScore(&states[ST_GAME], finalScore);    
+    }
+
+    if(showBeatHighScore){
         text("A NEW HIGH SCORE!", 12, 64);
     }
     else{

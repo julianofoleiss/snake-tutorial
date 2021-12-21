@@ -49,6 +49,7 @@ uint32_t GAME_getHighScore(PROGRAM_STATE *ps){
 
 void GAME_setHighScore(PROGRAM_STATE *ps, uint32_t score){
     ps->stateData.game->highScore = score;
+    diskw(&score, sizeof(uint32_t));
 }
 
 void GAME_start(PROGRAM_STATE *ps){
@@ -82,9 +83,6 @@ void GAME_draw(PROGRAM_STATE *ps){
     *DRAW_COLORS = 0x4320;
     blit(fruitSprite, gd->fruit.x * 8, gd->fruit.y * 8, 8, 8, BLIT_2BPP);
 
-    // TODO: sprintf takes too much space. Rewrite this.
-    // sprintf(scoreText, "SCORE:%d", gd->score);
-
     *DRAW_COLORS = 0x04;
     text(concatStringAndNumber("SCORE:", gd->score), 0,0);
 }
@@ -94,7 +92,7 @@ void GAME_create(PROGRAM_STATE *state){
     state->start  = GAME_start;
     state->update = GAME_update;
     state->stateData.game = &gameStateData;
-    state->stateData.game->highScore = 0;
+    diskr(&gameStateData.highScore, sizeof(uint32_t));
 }
 
 
